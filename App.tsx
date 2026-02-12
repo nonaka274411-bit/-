@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { QuizStep, UserProfile, DiagnosisResult } from './types';
 import { getHairDiagnosis } from './geminiService';
 import Splash from './components/Splash';
@@ -158,6 +159,7 @@ const App: React.FC = () => {
           <ResultsView result={result} onReset={reset} />
         )}
       </main>
+      <SpeedInsights />
     </div>
   );
 };
