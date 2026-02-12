@@ -2,7 +2,6 @@
 import React from 'react';
 import { DiagnosisResult } from '../types';
 import { KERASTASE_PRODUCTS } from '../productData';
-import ProductIcon from './ProductIcon';
 
 interface ResultsViewProps {
   result: DiagnosisResult;
@@ -26,13 +25,11 @@ const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => {
         </div>
       </div>
 
-      {/* Product List - Seamless Design */}
+      {/* Product List - Seamless Design with Real Images */}
       <div className="flex-1 px-8 py-8 space-y-16">
         {result.products.map((p, idx) => {
           const catalogItem = KERASTASE_PRODUCTS.find(item => item.name === p.name);
-          // Default styling fallback if not found
-          const type = catalogItem?.type || 'other';
-          const color = catalogItem?.color || '#333';
+          const displayImage = catalogItem?.image;
           
           return (
             <div key={idx} className="group relative">
@@ -42,9 +39,13 @@ const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => {
               </div>
 
               <div className="flex flex-row items-center gap-8">
-                {/* SVG Icon Section */}
-                <div className="w-24 h-32 flex-shrink-0 flex items-center justify-center transition-transform duration-700 group-hover:scale-105">
-                  <ProductIcon type={type} color={color} className="w-full h-full drop-shadow-lg" />
+                {/* Product Image Section */}
+                <div className="w-28 h-32 flex-shrink-0 flex items-center justify-center transition-transform duration-700 group-hover:scale-105 bg-white">
+                  <img 
+                    src={displayImage} 
+                    alt={p.name}
+                    className="w-full h-full object-contain drop-shadow-md"
+                  />
                 </div>
                 
                 {/* Text Content */}

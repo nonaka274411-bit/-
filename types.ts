@@ -38,14 +38,13 @@ export interface DiagnosisResult {
   products: ProductRecommendation[];
 }
 
-export type ProductType = 'shampoo' | 'treatment-tube' | 'treatment-jar' | 'oil' | 'spray' | 'mousse' | 'other';
-
 export interface ProductData {
   category: string;
   line: string;
   name: string;
   size: string;
   description: string;
-  type: ProductType;
-  color: string;
+  image: string;
 }
+
+export type ProductType = 'shampoo' | 'treatment-jar' | 'treatment-tube' | 'oil' | 'spray';
