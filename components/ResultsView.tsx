@@ -2,6 +2,7 @@
 import React from 'react';
 import { DiagnosisResult } from '../types';
 import { KERASTASE_PRODUCTS } from '../productData';
+import ProductIcon from './ProductIcon';
 
 interface ResultsViewProps {
   result: DiagnosisResult;
@@ -10,55 +11,60 @@ interface ResultsViewProps {
 
 const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => {
   return (
-    <div className="flex-1 py-16 flex flex-col space-y-16 animate-in fade-in duration-1000 bg-white">
-      {/* Header */}
-      <div className="text-center space-y-4 px-6">
-        <h2 className="text-3xl font-serif text-gray-900 tracking-tight">Your Personal Ritual</h2>
-        <div className="h-[0.5px] w-12 bg-[#c5a059] mx-auto opacity-30" />
-        <p className="text-[13px] text-gray-500 font-light leading-relaxed italic max-w-xs mx-auto">
-          "{result.summary}"
-        </p>
+    <div className="flex-1 flex flex-col bg-white animate-fade-in pb-16">
+      {/* Header Area */}
+      <div className="px-8 pt-12 pb-8 bg-gray-50 border-b border-gray-100">
+        <div className="flex items-center space-x-2 mb-4">
+          <div className="w-1 h-4 bg-black"></div>
+          <p className="text-[10px] tracking-[0.3em] text-gray-500 uppercase font-bold">Prescription</p>
+        </div>
+        <h2 className="text-3xl font-light text-slate-900 mb-6 tracking-wide">Your Personalized<br/>Ritual</h2>
+        <div className="p-4 bg-white border-l-2 border-slate-300">
+          <p className="text-xs text-slate-600 leading-7 font-light italic">
+            "{result.summary}"
+          </p>
+        </div>
       </div>
 
-      {/* Product List */}
-      <div className="space-y-24 px-1">
+      {/* Product List - Seamless Design */}
+      <div className="flex-1 px-8 py-8 space-y-16">
         {result.products.map((p, idx) => {
           const catalogItem = KERASTASE_PRODUCTS.find(item => item.name === p.name);
-          const displayDescription = catalogItem?.description || p.description;
-          const displayImage = catalogItem?.image || `https://source.unsplash.com/featured/?cosmetics,luxury,hair&sig=${idx}`;
+          // Default styling fallback if not found
+          const type = catalogItem?.type || 'other';
+          const color = catalogItem?.color || '#333';
           
           return (
-            <div 
-              key={idx} 
-              className="group flex flex-col space-y-8 animate-in fade-in slide-in-from-bottom-10" 
-              style={{ animationDelay: `${idx * 200}ms` }}
-            >
-              {/* Image with Uniform Aspect Ratio */}
-              <div className="relative w-full image-aspect bg-gray-50 overflow-hidden shadow-sm transition-all duration-1000 group-hover:shadow-xl">
-                <img 
-                  src={displayImage} 
-                  alt={p.name}
-                  className="w-full h-full object-cover grayscale-[0.1] hover:grayscale-0 transition-all duration-1000 scale-[1.01] hover:scale-105"
-                />
-                <div className="absolute top-0 right-0 p-6">
-                   <span className="text-[10px] font-serif text-[#c5a059] tracking-widest bg-white/80 backdrop-blur px-4 py-2 border border-gray-100">STEP 0{idx + 1}</span>
-                </div>
+            <div key={idx} className="group relative">
+              {/* Step Indicator Background */}
+              <div className="absolute -left-4 -top-6 text-[80px] font-bold text-gray-50 -z-10 select-none font-serif opacity-50">
+                {idx + 1}
               </div>
 
-              {/* Text Info */}
-              <div className="space-y-4 px-4">
-                <div className="space-y-1">
-                  <span className="text-[9px] tracking-[0.4em] text-[#c5a059] uppercase font-bold">{p.line}</span>
-                  <h3 className="text-2xl font-serif text-gray-900 leading-tight">{p.name}</h3>
+              <div className="flex flex-row items-center gap-8">
+                {/* SVG Icon Section */}
+                <div className="w-24 h-32 flex-shrink-0 flex items-center justify-center transition-transform duration-700 group-hover:scale-105">
+                  <ProductIcon type={type} color={color} className="w-full h-full drop-shadow-lg" />
                 </div>
                 
-                <p className="text-[13px] text-gray-500 font-light leading-relaxed border-l-2 border-[#c5a059]/10 pl-4 py-1">
-                  {displayDescription}
-                </p>
-                
-                <div className="bg-gray-50/50 p-5 space-y-2">
-                   <span className="text-[8px] text-gray-400 uppercase tracking-widest font-bold block">Expert Guidance</span>
-                   <p className="text-[11px] text-gray-500 italic leading-relaxed">{p.howToUse}</p>
+                {/* Text Content */}
+                <div className="flex-1 py-1">
+                  <div className="mb-3">
+                    <span className="inline-block py-1 px-2 bg-gray-100 text-[8px] font-bold tracking-widest text-slate-500 uppercase rounded-sm">
+                      {p.line}
+                    </span>
+                  </div>
+                  <h3 className="text-base font-medium text-slate-900 mb-3 leading-tight">{p.name}</h3>
+                  <p className="text-[11px] text-slate-500 leading-relaxed mb-4 font-light">
+                    {catalogItem?.description || p.description}
+                  </p>
+                  
+                  <div className="flex items-start space-x-2 pt-3 border-t border-dashed border-gray-200">
+                    <span className="text-[10px] font-bold text-slate-400 mt-0.5">USE:</span>
+                    <p className="text-[10px] text-slate-500 leading-relaxed">
+                      {p.howToUse}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -66,26 +72,23 @@ const ResultsView: React.FC<ResultsViewProps> = ({ result, onReset }) => {
         })}
       </div>
 
-      {/* Advice Section */}
-      <div className="mx-6 p-10 bg-[#fdfaf3] text-center space-y-6 border border-[#c5a059]/5 animate-in fade-in duration-1000 delay-500">
-        <div className="inline-block px-3 py-1 border-y border-[#c5a059]/20">
-          <span className="text-[9px] tracking-[0.4em] text-[#c5a059] uppercase font-bold">One Point Advice</span>
+      {/* Advice Section - Modern Card */}
+      <div className="mx-6 mb-12">
+        <div className="bg-slate-900 text-white px-8 py-8 shadow-xl">
+          <h3 className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-4 border-b border-slate-700 pb-2">Professional Tip</h3>
+          <p className="text-sm text-gray-300 leading-8 font-light font-serif italic">
+            {result.onePointAdvice}
+          </p>
         </div>
-        <p className="text-[13px] text-gray-700 font-light leading-loose max-w-xs mx-auto italic">
-          {result.onePointAdvice}
-        </p>
       </div>
 
-      {/* Final Action */}
-      <div className="pt-8 pb-20 flex flex-col items-center space-y-10 px-6">
-        <button className="w-full py-6 bg-gray-900 text-white text-[10px] font-bold tracking-[0.5em] uppercase hover:bg-[#c5a059] transition-all duration-700 shadow-xl active:scale-95">
-          Shop Your Ritual
-        </button>
+      {/* Footer Action - Minimal Text Link */}
+      <div className="text-center pb-8">
         <button 
           onClick={onReset}
-          className="text-gray-300 text-[9px] tracking-[0.4em] uppercase hover:text-gray-600 transition-colors"
+          className="text-[10px] font-bold tracking-[0.2em] text-slate-400 hover:text-slate-900 transition-colors uppercase border-b border-transparent hover:border-slate-900 pb-1"
         >
-          Reset Analysis
+          Start New Diagnosis
         </button>
       </div>
     </div>

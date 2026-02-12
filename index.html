@@ -4,56 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kérastase AI Concierge</title>
+    <title>Kérastase Diagnosis</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Noto+Sans+JP:wght@100;300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Noto Sans JP', sans-serif;
             background-color: #ffffff;
-            color: #1a1a1a;
+            color: #333333;
             margin: 0;
-            /* スクロールを許可 */
             overflow-y: auto;
             overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-        }
-        h1, h2, h3, .font-serif {
-            font-family: 'Playfair Display', serif;
-        }
-        .gold-gradient {
-            background: linear-gradient(135deg, #c5a059 0%, #f1e4d1 50%, #c5a059 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-font-smoothing: antialiased;
         }
         
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-            100% { transform: translateY(0px); }
+        /* シンプルなフェードイン */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes reveal-letter {
-            0% { opacity: 0; transform: translateY(15px); filter: blur(5px); }
-            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
-        .letter-reveal {
-            display: inline-block;
-            animation: reveal-letter 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-            opacity: 0;
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
         }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        .image-aspect {
-            aspect-ratio: 4 / 5;
-        }
     </style>
 <script type="importmap">
 {

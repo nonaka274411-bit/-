@@ -11,8 +11,12 @@ const App: React.FC = () => {
   const [step, setStep] = useState<QuizStep>(QuizStep.START);
   const [profile, setProfile] = useState<UserProfile>({
     hairType: '',
+    hairVolume: '',
     scalpCondition: '',
+    hairHistory: '',
     mainConcern: '',
+    ageGroup: '',
+    desiredFinish: '',
     lifestyle: ''
   });
   const [result, setResult] = useState<DiagnosisResult | null>(null);
@@ -31,30 +35,30 @@ const App: React.FC = () => {
       setStep(QuizStep.RESULTS);
     } catch (error) {
       console.error("Diagnosis failed", error);
-      // Fallback
+      // Fallback data
       setResult({
-        summary: "至高の輝きを求めるあなたの髪には、ケラスターゼ最高峰のクロノロジストを中心としたリチュアルが最適です。",
-        onePointAdvice: "週に一度は、トリートメントを塗布した後に温かい蒸しタオルで5分間パックすることで、成分がより深くまで浸透します。",
+        summary: "複合的なケアが必要です。まずは保湿バランスを整え、外部ストレスから髪を守るルーティンを確立しましょう。",
+        onePointAdvice: "トリートメントは、コームを使って髪一本一本に行き渡らせることで、浸透率が格段にアップします。",
         products: [
           {
             name: "バン クロノロジスト R",
             line: "CHRONOLOGISTE",
             description: "頭皮・毛髪をケアし健康的な印象の美しいツヤを与える",
-            howToUse: "地肌からしっかり濡らし、円を描くようにマッサージしながら洗い上げてください。",
+            howToUse: "頭皮全体に行き渡らせるようにマッサージしながら洗います。",
             imageHint: ""
           },
           {
             name: "マスク クロノロジスト R",
             line: "CHRONOLOGISTE",
             description: "眠っている髪の美しさを引き出す",
-            howToUse: "毛先を中心に馴染ませ、指の間を通して浸透させます。5分置いてからすすいでください。",
+            howToUse: "毛先を中心に塗布し、5〜10分放置して成分を浸透させます。",
             imageHint: ""
           },
           {
             name: "ユイル クロノロジスト N",
             line: "CHRONOLOGISTE",
-            description: "美髪の最高峰。全方位ケアで、時を超えてさらなる美の高みへ",
-            howToUse: "タオルドライした髪に、1〜2プッシュを手に広げ、中間から毛先に馴染ませます。",
+            description: "美髪の最高峰。全方位ケアでさらなる美の高みへ",
+            howToUse: "ドライ前とドライ後、少量を毛先に馴染ませます。",
             imageHint: ""
           }
         ]
@@ -65,49 +69,85 @@ const App: React.FC = () => {
 
   const reset = () => {
     setStep(QuizStep.START);
-    setProfile({ hairType: '', scalpCondition: '', mainConcern: '', lifestyle: '' });
+    setProfile({
+      hairType: '',
+      hairVolume: '',
+      scalpCondition: '',
+      hairHistory: '',
+      mainConcern: '',
+      ageGroup: '',
+      desiredFinish: '',
+      lifestyle: ''
+    });
     setResult(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   };
 
   return (
-    <div className="min-h-screen max-w-md mx-auto relative bg-white overflow-y-auto">
-      {/* Decorative Aura */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute -top-10 -right-10 w-64 h-64 bg-[#fdfaf3] rounded-full blur-3xl opacity-60" />
-      </div>
-
-      <main className="relative z-10 flex flex-col min-h-screen px-6">
+    <div className="min-h-screen w-full bg-white text-slate-800 font-sans selection:bg-gray-100">
+      <main className="max-w-xl mx-auto min-h-screen flex flex-col">
         {step === QuizStep.START && <Splash onStart={handleStart} />}
         
         {step === QuizStep.HAIR_TYPE && (
           <QuestionCard
-            title="Hair Type & Texture"
-            options={["細くて柔らかい", "普通・健康的", "硬くて太い", "くせ毛・うねり"]}
-            onSelect={(val) => { updateProfile('hairType', val); setStep(QuizStep.SCALP_CONDITION); }}
+            title="髪質・太さ"
+            options={["細くて柔らかい", "普通", "硬くて太い", "くせ毛・うねり"]}
+            onSelect={(val) => { updateProfile('hairType', val); setStep(QuizStep.HAIR_VOLUME); }}
+          />
+        )}
+
+        {step === QuizStep.HAIR_VOLUME && (
+          <QuestionCard
+            title="髪の毛の量"
+            options={["少ない・薄い", "普通", "多い・広がる", "部分的に気になる"]}
+            onSelect={(val) => { updateProfile('hairVolume', val); setStep(QuizStep.SCALP_CONDITION); }}
           />
         )}
 
         {step === QuizStep.SCALP_CONDITION && (
           <QuestionCard
-            title="Scalp Condition"
-            options={["健康的・バランスが良い", "ベタつき・皮脂が気になる", "乾燥・カサつき", "敏感・赤み"]}
-            onSelect={(val) => { updateProfile('scalpCondition', val); setStep(QuizStep.MAIN_CONCERN); }}
+            title="頭皮の状態"
+            options={["乾燥・カサつき", "ノーマル（健康的）", "ベタつき・ニオイ", "敏感・赤み・かゆみ"]}
+            onSelect={(val) => { updateProfile('scalpCondition', val); setStep(QuizStep.HAIR_HISTORY); }}
+          />
+        )}
+
+        {step === QuizStep.HAIR_HISTORY && (
+          <QuestionCard
+            title="施術履歴"
+            options={["カラー・パーマなし", "定期的なカラー", "ブリーチ・ハイトーン", "縮毛矯正・パーマ"]}
+            onSelect={(val) => { updateProfile('hairHistory', val); setStep(QuizStep.MAIN_CONCERN); }}
           />
         )}
 
         {step === QuizStep.MAIN_CONCERN && (
           <QuestionCard
-            title="Primary Concern"
-            options={["ダメージ・枝毛・切れ毛", "カラー後の退色と乾燥", "ボリュームとハリ・コシ", "ひどいパサつき"]}
-            onSelect={(val) => { updateProfile('mainConcern', val); setStep(QuizStep.LIFESTYLE); }}
+            title="現在の最大の悩み"
+            options={["ダメージ・切れ毛", "パサつき・乾燥", "ボリュームが出ない", "カラーの色持ち"]}
+            onSelect={(val) => { updateProfile('mainConcern', val); setStep(QuizStep.AGE_GROUP); }}
+          />
+        )}
+
+        {step === QuizStep.AGE_GROUP && (
+          <QuestionCard
+            title="年代"
+            options={["20代以下", "30代", "40代", "50代以上"]}
+            onSelect={(val) => { updateProfile('ageGroup', val); setStep(QuizStep.DESIRED_FINISH); }}
+          />
+        )}
+
+        {step === QuizStep.DESIRED_FINISH && (
+          <QuestionCard
+            title="理想の仕上がり"
+            options={["しっとり・まとまり", "サラサラ・指通り", "ハリコシ・ボリューム", "ツヤ・なめらかさ"]}
+            onSelect={(val) => { updateProfile('desiredFinish', val); setStep(QuizStep.LIFESTYLE); }}
           />
         )}
 
         {step === QuizStep.LIFESTYLE && (
           <QuestionCard
-            title="Your Lifestyle"
-            options={["アイロン・コテを常用", "紫外線や外気に触れる", "多忙によるストレス", "スポーツ・ジム"]}
+            title="普段のスタイリング"
+            options={["毎日アイロン・コテを使用", "ドライヤーのみ", "スタイリング剤を多用", "自然乾燥が多い"]}
             onSelect={(val) => { updateProfile('lifestyle', val); completeDiagnosis(); }}
           />
         )}

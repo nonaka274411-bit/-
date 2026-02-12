@@ -9,21 +9,36 @@ export async function getHairDiagnosis(profile: UserProfile): Promise<DiagnosisR
   const productCatalogStr = KERASTASE_PRODUCTS.map(p => `- ${p.name} (ライン: ${p.line}, カテゴリ: ${p.category})`).join('\n');
 
   const prompt = `
-    あなたはケラスターゼの最高峰ヘアエステティシャンです。以下のカタログにある製品から、ユーザーに最適な3ステップのリチュアルを提案してください。
+    あなたはケラスターゼのトップヘアスタイリストです。
+    ユーザーのカルテに基づき、最も効果的でパーソナライズされた「3ステップケア（シャンプー、トリートメント、アウトバス）」を処方してください。
 
-    【製品カタログ】
+    【重要なルール: ミックス提案の推奨】
+    **決して「同じシリーズ（ライン）で揃えること」を正解としないでください。**
+    プロの診断とは、例えば「頭皮はオイリー（スペシフィック）だが、毛先はブリーチダメージがある（シカエクストリーム）」といった複合的な悩みに対応することです。
+    ユーザーの悩みが複数ある場合、異なるシリーズを組み合わせる（クロスセリング）提案を積極的に行ってください。
+
+    【ユーザーカルテ】
+    - 髪質: ${profile.hairType}
+    - 髪の量: ${profile.hairVolume}
+    - 頭皮の状態: ${profile.scalpCondition}
+    - 施術履歴: ${profile.hairHistory}
+    - 現在の最大の悩み: ${profile.mainConcern}
+    - 年代: ${profile.ageGroup}
+    - 理想の仕上がり: ${profile.desiredFinish}
+    - スタイリング習慣: ${profile.lifestyle}
+
+    【製品リスト】
     ${productCatalogStr}
 
-    【ユーザープロフィール】
-    - 髪質: ${profile.hairType}
-    - 頭皮: ${profile.scalpCondition}
-    - 悩み: ${profile.mainConcern}
-    - 生活: ${profile.lifestyle}
+    【出力構成】
+    1. プロダクト1: シャンプー (Bain)
+    2. プロダクト2: 集中トリートメント (Masque/Fondant) ※ダメージレベルに合わせて選択
+    3. プロダクト3: 洗い流さないトリートメント (Oil/Serum/Thermique) ※仕上がり質感や熱ダメージ対策に合わせて選択
 
-    【指示】
-    1. カタログから「バン(シャンプー)」「マスク/フォンダン/レヴィタル(トリートメント)」「セラム/オイル/フルイド/テルミック(洗い流さないトリートメント)」を各1つずつ、計3つ正確に選んでください。
-    2. 選んだ理由を簡潔に、上品な日本語で説明してください。
-    3. 最後に、ユーザーのライフスタイルに合わせた「美髪を保つためのプロのワンポイントアドバイス」を1つ提供してください。
+    【出力スキーマ】
+    - summary: なぜこの組み合わせ（ミックス）にしたのか、プロ視点での論理的な解説（100文字程度）。
+    - onePointAdvice: 明日から使える具体的なプロのテクニック（例: 塗布の仕方、ドライヤーの当て方など）。
+    - products: 選定した3つの製品詳細。imageHintは空で良い。
   `;
 
   const response = await ai.models.generateContent({
@@ -34,8 +49,8 @@ export async function getHairDiagnosis(profile: UserProfile): Promise<DiagnosisR
       responseSchema: {
         type: Type.OBJECT,
         properties: {
-          summary: { type: Type.STRING, description: "診断結果の全体的な総評" },
-          onePointAdvice: { type: Type.STRING, description: "プロのワンポイントアドバイス" },
+          summary: { type: Type.STRING, description: "今回の組み合わせの意図（ミックス提案の理由）" },
+          onePointAdvice: { type: Type.STRING, description: "プロからの具体的なケアアドバイス" },
           products: {
             type: Type.ARRAY,
             items: {
