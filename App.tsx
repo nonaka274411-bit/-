@@ -11,13 +11,12 @@ const App: React.FC = () => {
   const [step, setStep] = useState<QuizStep>(QuizStep.START);
   const [profile, setProfile] = useState<UserProfile>({
     hairType: '',
-    hairVolume: '',
-    scalpCondition: '',
-    hairHistory: '',
-    mainConcern: '',
-    ageGroup: '',
-    desiredFinish: '',
-    lifestyle: ''
+    scalpType: '',
+    frizzWave: '',
+    damageLevel: '',
+    agingCare: '',
+    idealFinish: '',
+    carePriority: ''
   });
   const [result, setResult] = useState<DiagnosisResult | null>(null);
 
@@ -25,7 +24,7 @@ const App: React.FC = () => {
     setProfile(prev => ({ ...prev, [key]: value }));
   };
 
-  const handleStart = () => setStep(QuizStep.HAIR_TYPE);
+  const handleStart = () => setStep(QuizStep.Q1_HAIR_TYPE);
 
   const completeDiagnosis = async () => {
     setStep(QuizStep.LOADING);
@@ -37,8 +36,8 @@ const App: React.FC = () => {
       console.error("Diagnosis failed", error);
       // Fallback data
       setResult({
-        summary: "複合的なケアが必要です。まずは保湿バランスを整え、外部ストレスから髪を守るルーティンを確立しましょう。",
-        onePointAdvice: "トリートメントは、コームを使って髪一本一本に行き渡らせることで、浸透率が格段にアップします。",
+        summary: "あなたの髪は複数の要因が重なっています。基本の保湿に加え、ダメージ補修と頭皮ケアを組み合わせた特別なレシピを提案します。",
+        onePointAdvice: "トリートメントは毛先から塗布し、目の粗いコームでとかすことで浸透率が劇的に上がります。",
         products: [
           {
             name: "バン クロノロジスト R",
@@ -71,13 +70,12 @@ const App: React.FC = () => {
     setStep(QuizStep.START);
     setProfile({
       hairType: '',
-      hairVolume: '',
-      scalpCondition: '',
-      hairHistory: '',
-      mainConcern: '',
-      ageGroup: '',
-      desiredFinish: '',
-      lifestyle: ''
+      scalpType: '',
+      frizzWave: '',
+      damageLevel: '',
+      agingCare: '',
+      idealFinish: '',
+      carePriority: ''
     });
     setResult(null);
     window.scrollTo(0, 0);
@@ -88,67 +86,100 @@ const App: React.FC = () => {
       <main className="max-w-xl mx-auto min-h-screen flex flex-col">
         {step === QuizStep.START && <Splash onStart={handleStart} />}
         
-        {step === QuizStep.HAIR_TYPE && (
+        {/* Q1: 髪質 */}
+        {step === QuizStep.Q1_HAIR_TYPE && (
           <QuestionCard
-            title="髪質・太さ"
-            options={["細くて柔らかい", "普通", "硬くて太い", "くせ毛・うねり"]}
-            onSelect={(val) => { updateProfile('hairType', val); setStep(QuizStep.HAIR_VOLUME); }}
+            title="Q1. 本来の髪質は？"
+            options={[
+              "細い・柔らかい（猫っ毛）",
+              "普通",
+              "太い・硬い"
+            ]}
+            onSelect={(val) => { updateProfile('hairType', val); setStep(QuizStep.Q2_SCALP_TYPE); }}
           />
         )}
 
-        {step === QuizStep.HAIR_VOLUME && (
+        {/* Q2: 頭皮 */}
+        {step === QuizStep.Q2_SCALP_TYPE && (
           <QuestionCard
-            title="髪の毛の量"
-            options={["少ない・薄い", "普通", "多い・広がる", "部分的に気になる"]}
-            onSelect={(val) => { updateProfile('hairVolume', val); setStep(QuizStep.SCALP_CONDITION); }}
+            title="Q2. 頭皮の状態は？"
+            options={[
+              "ベタつきやすい・ニオイが気になる",
+              "乾燥している・フケが出る",
+              "敏感で荒れやすい・赤みがある",
+              "特にトラブルはない"
+            ]}
+            onSelect={(val) => { updateProfile('scalpType', val); setStep(QuizStep.Q3_FRIZZ_WAVE); }}
           />
         )}
 
-        {step === QuizStep.SCALP_CONDITION && (
+        {/* Q3: くせ・広がり */}
+        {step === QuizStep.Q3_FRIZZ_WAVE && (
           <QuestionCard
-            title="頭皮の状態"
-            options={["乾燥・カサつき", "ノーマル（健康的）", "ベタつき・ニオイ", "敏感・赤み・かゆみ"]}
-            onSelect={(val) => { updateProfile('scalpCondition', val); setStep(QuizStep.HAIR_HISTORY); }}
+            title="Q3. くせや広がりは？"
+            options={[
+              "直毛・ストンとしている",
+              "うねる・まとまりにくい",
+              "湿気で広がる・パサつく",
+              "パーマや縮毛矯正をかけている"
+            ]}
+            onSelect={(val) => { updateProfile('frizzWave', val); setStep(QuizStep.Q4_DAMAGE_LEVEL); }}
           />
         )}
 
-        {step === QuizStep.HAIR_HISTORY && (
+        {/* Q4: ダメージレベル */}
+        {step === QuizStep.Q4_DAMAGE_LEVEL && (
           <QuestionCard
-            title="施術履歴"
-            options={["カラー・パーマなし", "定期的なカラー", "ブリーチ・ハイトーン", "縮毛矯正・パーマ"]}
-            onSelect={(val) => { updateProfile('hairHistory', val); setStep(QuizStep.MAIN_CONCERN); }}
+            title="Q4. 髪のダメージレベルは？"
+            options={[
+              "カラーやパーマはしていない（健康毛）",
+              "定期的にカラーをしている",
+              "毎日のアイロン・コテの使用頻度が高い",
+              "ブリーチやハイライトを繰り返している"
+            ]}
+            onSelect={(val) => { updateProfile('damageLevel', val); setStep(QuizStep.Q5_AGING_CARE); }}
           />
         )}
 
-        {step === QuizStep.MAIN_CONCERN && (
+        {/* Q5: エイジング */}
+        {step === QuizStep.Q5_AGING_CARE && (
           <QuestionCard
-            title="現在の最大の悩み"
-            options={["ダメージ・切れ毛", "パサつき・乾燥", "ボリュームが出ない", "カラーの色持ち"]}
-            onSelect={(val) => { updateProfile('mainConcern', val); setStep(QuizStep.AGE_GROUP); }}
+            title="Q5. 年齢による変化は感じますか？"
+            options={[
+              "特に感じない",
+              "抜け毛が増えた・分け目が気になる",
+              "髪が細くなった・ボリュームが出ない",
+              "白髪染めによるパサつきが気になる"
+            ]}
+            onSelect={(val) => { updateProfile('agingCare', val); setStep(QuizStep.Q6_IDEAL_FINISH); }}
           />
         )}
 
-        {step === QuizStep.AGE_GROUP && (
+        {/* Q6: 理想の仕上がり */}
+        {step === QuizStep.Q6_IDEAL_FINISH && (
           <QuestionCard
-            title="年代"
-            options={["20代以下", "30代", "40代", "50代以上"]}
-            onSelect={(val) => { updateProfile('ageGroup', val); setStep(QuizStep.DESIRED_FINISH); }}
+            title="Q6. 理想の仕上がりは？"
+            options={[
+              "サラサラと指通りの良い、軽い仕上がり",
+              "しっとりと重みのある、まとまる仕上がり",
+              "ツヤとなめらかさを重視した仕上がり",
+              "根元からふんわりとした、ハリ・コシのある仕上がり"
+            ]}
+            onSelect={(val) => { updateProfile('idealFinish', val); setStep(QuizStep.Q7_PRIORITY); }}
           />
         )}
 
-        {step === QuizStep.DESIRED_FINISH && (
+        {/* Q7: 最優先事項 */}
+        {step === QuizStep.Q7_PRIORITY && (
           <QuestionCard
-            title="理想の仕上がり"
-            options={["しっとり・まとまり", "サラサラ・指通り", "ハリコシ・ボリューム", "ツヤ・なめらかさ"]}
-            onSelect={(val) => { updateProfile('desiredFinish', val); setStep(QuizStep.LIFESTYLE); }}
-          />
-        )}
-
-        {step === QuizStep.LIFESTYLE && (
-          <QuestionCard
-            title="普段のスタイリング"
-            options={["毎日アイロン・コテを使用", "ドライヤーのみ", "スタイリング剤を多用", "自然乾燥が多い"]}
-            onSelect={(val) => { updateProfile('lifestyle', val); completeDiagnosis(); }}
+            title="Q7. 今、最も優先したいケアは？"
+            options={[
+              "徹底的なダメージ補修",
+              "頭皮環境の改善（スカルプケア）",
+              "くせ毛のコントロール・湿気対策",
+              "ヘアカラーの色持ち・ツヤの維持"
+            ]}
+            onSelect={(val) => { updateProfile('carePriority', val); completeDiagnosis(); }}
           />
         )}
 

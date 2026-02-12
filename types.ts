@@ -1,27 +1,25 @@
 
 export enum QuizStep {
   START = 'START',
-  HAIR_TYPE = 'HAIR_TYPE',
-  HAIR_VOLUME = 'HAIR_VOLUME',
-  SCALP_CONDITION = 'SCALP_CONDITION',
-  HAIR_HISTORY = 'HAIR_HISTORY',
-  MAIN_CONCERN = 'MAIN_CONCERN',
-  AGE_GROUP = 'AGE_GROUP',
-  DESIRED_FINISH = 'DESIRED_FINISH',
-  LIFESTYLE = 'LIFESTYLE',
+  Q1_HAIR_TYPE = 'Q1_HAIR_TYPE',       // 髪質（太さ・硬さ）
+  Q2_SCALP_TYPE = 'Q2_SCALP_TYPE',     // 頭皮の状態
+  Q3_FRIZZ_WAVE = 'Q3_FRIZZ_WAVE',     // くせ・広がり
+  Q4_DAMAGE_LEVEL = 'Q4_DAMAGE_LEVEL', // ダメージレベル
+  Q5_AGING_CARE = 'Q5_AGING_CARE',     // エイジング悩み
+  Q6_IDEAL_FINISH = 'Q6_IDEAL_FINISH', // 理想の仕上がり
+  Q7_PRIORITY = 'Q7_PRIORITY',         // 最優先したいケア
   LOADING = 'LOADING',
   RESULTS = 'RESULTS'
 }
 
 export interface UserProfile {
   hairType: string;
-  hairVolume: string;
-  scalpCondition: string;
-  hairHistory: string;
-  mainConcern: string;
-  ageGroup: string;
-  desiredFinish: string;
-  lifestyle: string;
+  scalpType: string;
+  frizzWave: string;
+  damageLevel: string;
+  agingCare: string;
+  idealFinish: string;
+  carePriority: string;
 }
 
 export interface ProductRecommendation {
