@@ -4,6 +4,12 @@ import { UserProfile, DiagnosisResult } from "./types";
 import { KERASTASE_PRODUCTS } from "./productData";
 
 export async function getHairDiagnosis(profile: UserProfile): Promise<DiagnosisResult> {
+  // Security Check: Ensure API Key is available in the environment
+  if (!process.env.API_KEY) {
+    console.warn("API Key is missing. Please set process.env.API_KEY. Using fallback data.");
+    throw new Error("API Key is not defined in environment variables.");
+  }
+
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   const productCatalogStr = KERASTASE_PRODUCTS.map(p => `- ${p.name} (ライン: ${p.line}, カテゴリ: ${p.category})`).join('\n');

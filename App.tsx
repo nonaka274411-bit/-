@@ -38,13 +38,46 @@ const App: React.FC = () => {
 
   const completeDiagnosis = async () => {
     setStep(QuizStep.LOADING);
+    window.scrollTo(0, 0);
+
     try {
       const diagnosis = await getHairDiagnosis(profile);
       setResult(diagnosis);
-      setStep(QuizStep.RESULTS);
     } catch (error) {
       console.error("Diagnosis failed", error);
+      // Fallback Result ensures the user always sees a result, even if the API or network fails.
+      // This is crucial for mobile reliability.
+      setResult({
+        summary: "申し訳ありません。現在AIサーバーへの接続が混み合っているか、通信環境の影響により診断が完了しませんでした。ですが、あなたの髪質傾向に基づき、ケラスターゼの最高傑作「クロノロジスト」によるトータルケアをご提案します。",
+        onePointAdvice: "どんな髪質の方でも、トリートメント時の「なめし（指で挟んで滑らせる）」を丁寧に行うことで、成分の浸透と仕上がりのツヤが劇的に変わります。",
+        products: [
+          {
+            name: "バン クロノロジスト R",
+            line: "CHRONOLOGISTE",
+            description: "頭皮・毛髪をケアし健康的な印象の美しいツヤを与える",
+            howToUse: "予洗い後、頭皮をマッサージするように泡立てて洗い、1-2分泡パックをします。",
+            imageHint: ""
+          },
+          {
+            name: "マスク クロノロジスト R",
+            line: "CHRONOLOGISTE",
+            description: "頭皮と髪を複合的にケアし、生まれたてのような美しさへ",
+            howToUse: "水気をきり、頭皮から毛先まで塗布。5〜10分放置して流します。",
+            imageHint: ""
+          },
+          {
+            name: "ユイル クロノロジスト N",
+            line: "CHRONOLOGISTE",
+            description: "美髪の最高峰。全方位ケアでさらなる美の高みへ",
+            howToUse: "タオルドライ後、1-2プッシュを髪全体になじませて乾かします。",
+            imageHint: ""
+          }
+        ]
+      });
+    } finally {
       setStep(QuizStep.RESULTS);
+      // Ensure the view is scrolled to top when results appear
+      setTimeout(() => window.scrollTo(0, 0), 50);
     }
   };
 
