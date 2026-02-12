@@ -1,11 +1,11 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { UserProfile, DiagnosisResult } from "./types";
 import { KERASTASE_PRODUCTS } from "./productData";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 export async function getHairDiagnosis(profile: UserProfile): Promise<DiagnosisResult> {
+  // Initialize inside the function to avoid top-level execution issues
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  
   const productCatalogStr = KERASTASE_PRODUCTS.map(p => `- ${p.name} (ライン: ${p.line}, カテゴリ: ${p.category})`).join('\n');
 
   const prompt = `

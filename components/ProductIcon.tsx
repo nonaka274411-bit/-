@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ProductType } from '../types';
 
@@ -9,84 +8,96 @@ interface ProductIconProps {
 }
 
 const ProductIcon: React.FC<ProductIconProps> = ({ type, color, className = "w-full h-full" }) => {
-  // Use slightly lighter/darker shades for dimension
-  const baseColor = color;
-  const highlightColor = 'rgba(255,255,255,0.4)';
-  const shadowColor = 'rgba(0,0,0,0.1)';
+  const safeColorId = color.replace('#', '');
+  const gradId = `grad-${type}-${safeColorId}`;
+  
+  return (
+    <div className={className}>
+      <svg viewBox="0 0 100 160" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={color} stopOpacity="0.8" />
+            <stop offset="50%" stopColor={color} stopOpacity="0.6" />
+            <stop offset="100%" stopColor={color} stopOpacity="0.8" />
+          </linearGradient>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
 
-  switch (type) {
-    case 'shampoo':
-      return (
-        <svg viewBox="0 0 100 160" className={className} xmlns="http://www.w3.org/2000/svg">
-          {/* Cap */}
-          <rect x="25" y="10" width="50" height="15" rx="2" fill="#d1d5db" />
-          <rect x="28" y="5" width="44" height="5" rx="1" fill="#e5e7eb" />
-          {/* Bottle Body - Tapered */}
-          <path d="M25 25 L75 25 L85 140 Q85 150 75 150 L25 150 Q15 150 15 140 L25 25 Z" fill={baseColor} />
-          {/* Highlight */}
-          <path d="M25 25 L35 140" stroke={highlightColor} strokeWidth="10" strokeLinecap="round" opacity="0.3" />
-          {/* Label Area */}
-          <rect x="35" y="60" width="30" height="40" fill="rgba(255,255,255,0.8)" rx="2" />
-          <rect x="40" y="70" width="20" height="2" fill="#333" />
-          <rect x="40" y="75" width="15" height="1" fill="#333" />
-        </svg>
-      );
-    
-    case 'treatment-jar':
-      return (
-        <svg viewBox="0 0 100 100" className={className} xmlns="http://www.w3.org/2000/svg">
-          {/* Lid */}
-          <path d="M20 30 L80 30 L85 45 L15 45 Z" fill="#d1d5db" />
-          {/* Jar Body */}
-          <path d="M20 45 L80 45 L75 80 Q75 90 60 90 L40 90 Q25 90 25 80 L20 45 Z" fill={baseColor} />
-          {/* Highlight */}
-          <path d="M25 45 L30 80" stroke={highlightColor} strokeWidth="8" strokeLinecap="round" opacity="0.3" />
-          {/* Label */}
-          <rect x="35" y="60" width="30" height="15" fill="rgba(255,255,255,0.8)" rx="1" />
-        </svg>
-      );
+        {type === 'shampoo' && (
+          <g>
+             {/* Cap */}
+            <path d="M35 15 L65 15 L67 25 L33 25 Z" fill="#d4d4d8" />
+            {/* Body */}
+            <path d="M33 25 L67 25 L70 35 L70 145 Q70 155 60 155 L40 155 Q30 155 30 145 L30 35 L33 25 Z" fill={`url(#${gradId})`} />
+            {/* Liquid Shine */}
+            <path d="M35 35 L35 145" stroke="white" strokeWidth="2" strokeOpacity="0.3" strokeLinecap="round" />
+            {/* Label */}
+            <rect x="38" y="65" width="24" height="40" fill="white" fillOpacity="0.9" />
+          </g>
+        )}
 
-    case 'treatment-tube':
-      return (
-        <svg viewBox="0 0 100 160" className={className} xmlns="http://www.w3.org/2000/svg">
-          {/* Tube Body - Inverted */}
-          <path d="M20 10 L80 10 L70 120 L30 120 Z" fill={baseColor} />
-          {/* Cap */}
-          <rect x="28" y="120" width="44" height="25" rx="2" fill={baseColor} filter="brightness(0.8)" />
-          {/* Highlight */}
-          <path d="M30 10 L40 110" stroke={highlightColor} strokeWidth="15" strokeLinecap="round" opacity="0.2" />
-          {/* Label */}
-          <rect x="35" y="50" width="30" height="30" fill="rgba(255,255,255,0.8)" rx="1" />
-        </svg>
-      );
+        {type === 'treatment-jar' && (
+           <g transform="translate(0, 30)">
+            {/* Lid */}
+            <ellipse cx="50" cy="20" rx="30" ry="6" fill="#e4e4e7" />
+            <path d="M20 20 L80 20 L80 28 Q50 32 20 28 Z" fill="#d4d4d8" />
+            {/* Body */}
+            <path d="M22 28 L78 28 L76 70 Q76 80 50 80 Q24 80 24 70 L22 28 Z" fill={`url(#${gradId})`} />
+             {/* Label */}
+            <rect x="35" y="45" width="30" height="15" fill="white" fillOpacity="0.9" rx="1" />
+           </g>
+        )}
 
-    case 'oil':
-    case 'spray':
-      return (
-        <svg viewBox="0 0 100 160" className={className} xmlns="http://www.w3.org/2000/svg">
-          {/* Pump Head */}
-          <rect x="40" y="5" width="20" height="15" rx="2" fill="#d1d5db" />
-          <rect x="45" y="0" width="10" height="5" fill="#d1d5db" />
-          {/* Neck */}
-          <rect x="42" y="20" width="16" height="10" fill="#e5e7eb" />
-          {/* Bottle Body - Cylindrical */}
-          <rect x="25" y="30" width="50" height="110" rx="5" fill={baseColor} opacity="0.9" />
-          {/* Liquid content visual */}
-          <rect x="28" y="40" width="44" height="95" rx="3" fill={baseColor} filter="brightness(1.1)" />
-          {/* Highlight */}
-          <rect x="32" y="40" width="5" height="90" rx="2" fill={highlightColor} opacity="0.5" />
-          {/* Label */}
-          <rect x="35" y="70" width="30" height="40" fill="rgba(255,255,255,0.8)" rx="1" />
-        </svg>
-      );
+        {type === 'treatment-tube' && (
+          <g>
+             {/* Tube */}
+            <path d="M25 10 L75 10 L70 120 L30 120 Z" fill={`url(#${gradId})`} />
+            <path d="M25 10 L75 10 L75 5 L25 5 Z" fill={color} fillOpacity="0.5" />
+            {/* Cap */}
+            <path d="M30 120 L70 120 L70 140 Q50 145 30 140 Z" fill="#d4d4d8" />
+             {/* Shine */}
+            <path d="M35 15 L40 110" stroke="white" strokeWidth="6" strokeOpacity="0.2" strokeLinecap="round" />
+             {/* Label */}
+            <rect x="35" y="50" width="30" height="30" fill="white" fillOpacity="0.9" />
+          </g>
+        )}
 
-    default:
-      return (
-        <svg viewBox="0 0 100 100" className={className} xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="40" fill={baseColor} />
-        </svg>
-      );
-  }
+        {type === 'oil' && (
+          <g>
+             {/* Pump */}
+            <rect x="44" y="10" width="12" height="10" fill="#18181b" rx="1"/>
+            <path d="M44 10 L35 15 L35 18 L44 14 Z" fill="#18181b" />
+            <rect x="46" y="20" width="8" height="10" fill="#e4e4e7" />
+             {/* Bottle */}
+            <rect x="30" y="30" width="40" height="100" rx="4" fill={`url(#${gradId})`} stroke={color} strokeWidth="0.5" />
+             {/* Inner Liquid */}
+            <rect x="33" y="35" width="34" height="90" rx="2" fill={color} fillOpacity="0.7" />
+             {/* Shine */}
+            <path d="M35 40 L35 120" stroke="white" strokeWidth="4" strokeOpacity="0.3" strokeLinecap="round" />
+             {/* Label */}
+            <rect x="38" y="70" width="24" height="24" fill="white" fillOpacity="0.9" />
+          </g>
+        )}
+
+        {type === 'spray' && (
+          <g>
+             {/* Cap */}
+             <path d="M35 20 L65 20 L65 40 L35 40 Z" fill="#d4d4d8" />
+             {/* Body */}
+             <rect x="32" y="40" width="36" height="100" rx="2" fill={color} fillOpacity="0.9" />
+             {/* Label */}
+             <rect x="35" y="70" width="30" height="40" fill="white" fillOpacity="0.9" />
+          </g>
+        )}
+      </svg>
+    </div>
+  );
 };
 
 export default ProductIcon;
