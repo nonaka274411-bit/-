@@ -7,6 +7,7 @@ import QuestionCard from './components/QuestionCard';
 import ResultsView from './components/ResultsView';
 import LoadingScreen from './components/LoadingScreen';
 import OpeningAnimation from './components/OpeningAnimation';
+import { Analytics } from '@vercel/analytics/react';
 
 const App: React.FC = () => {
   const [showIntro, setShowIntro] = useState(true);
@@ -167,6 +168,7 @@ const App: React.FC = () => {
           <ResultsView result={result} onReset={reset} />
         )}
       </main>
+      <Analytics />
     </div>
   );
 };
