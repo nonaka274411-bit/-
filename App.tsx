@@ -7,7 +7,7 @@ import QuestionCard from './components/QuestionCard';
 import ResultsView from './components/ResultsView';
 import LoadingScreen from './components/LoadingScreen';
 import OpeningAnimation from './components/OpeningAnimation';
-import { X, Sparkles, Move3d } from 'lucide-react';
+import { X, Move3d } from 'lucide-react';
 
 const App: React.FC = () => {
   const [showIntro, setShowIntro] = useState(true);
@@ -65,7 +65,6 @@ const App: React.FC = () => {
       setResult(diagnosis);
     } catch (error) {
       console.error('Diagnosis failed, using salon prescribed fallback', error);
-      // High-end salon fallback ritual
       setResult({
         summary: "あなたの髪質傾向に基づき、毛髪内部の集中補修と頭皮のエイジングケアを両立するケラスターゼ最高峰「クロノロジスト」と「ユイル スブリム」のハイブリッドリチュアルをご提案します。",
         onePointAdvice: "トリートメント塗布後は指の腹で毛先に向かって10回優しくなめすことで、成分がキューティクルの深層まで浸透し、サロン帰りのツヤが持続します。",
@@ -116,7 +115,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div ref={containerRef} className="relative min-h-screen w-full bg-[#070709] text-slate-100 font-sans selection:bg-amber-400/30 selection:text-white overflow-x-hidden">
+    <div ref={containerRef} className="relative min-h-screen w-full bg-[#faf8f5] text-slate-800 font-sans selection:bg-amber-400/40 selection:text-slate-900 overflow-x-hidden">
       
       {/* 1. Opening Cinematic Animation Overlay */}
       {showIntro && <OpeningAnimation onComplete={handleIntroComplete} />}
@@ -131,8 +130,8 @@ const App: React.FC = () => {
           onBottleClick={(idx) => setActiveBottleIndex(idx)}
         />
         
-        {/* Subtle Luxury Gradient Scrim for readable text overlays */}
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#070709]/80 via-transparent to-[#070709]/60" />
+        {/* Soft Warm Pearl Gradient Scrim for crystal clear readability */}
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#faf8f5]/70 via-transparent to-[#faf8f5]/40" />
       </div>
 
       {/* 3. Main Application Flow (Layered Over 3D Scene) */}
@@ -157,7 +156,7 @@ const App: React.FC = () => {
             selectedOption={profile.hairType}
             onSelect={(val) => {
               updateProfile('hairType', val);
-              setActiveBottleIndex(1); // Shift 3D camera to Chroma
+              setActiveBottleIndex(1);
               setStep(QuizStep.Q2_SCALP_TYPE);
             }}
             onBack={() => setStep(QuizStep.START)}
@@ -179,7 +178,7 @@ const App: React.FC = () => {
             selectedOption={profile.scalpType}
             onSelect={(val) => {
               updateProfile('scalpType', val);
-              setActiveBottleIndex(3); // Shift 3D camera to Elixir
+              setActiveBottleIndex(3);
               setStep(QuizStep.Q3_FRIZZ_WAVE);
             }}
             onBack={() => setStep(QuizStep.Q1_HAIR_TYPE)}
@@ -201,7 +200,7 @@ const App: React.FC = () => {
             selectedOption={profile.frizzWave}
             onSelect={(val) => {
               updateProfile('frizzWave', val);
-              setActiveBottleIndex(2); // Chronologiste
+              setActiveBottleIndex(2);
               setStep(QuizStep.Q4_DAMAGE_LEVEL);
             }}
             onBack={() => setStep(QuizStep.Q2_SCALP_TYPE)}
@@ -223,7 +222,7 @@ const App: React.FC = () => {
             selectedOption={profile.damageLevel}
             onSelect={(val) => {
               updateProfile('damageLevel', val);
-              setActiveBottleIndex(0); // Blond Absolu for damage
+              setActiveBottleIndex(0);
               setStep(QuizStep.Q5_AGING_CARE);
             }}
             onBack={() => setStep(QuizStep.Q3_FRIZZ_WAVE)}
@@ -245,7 +244,7 @@ const App: React.FC = () => {
             selectedOption={profile.agingCare}
             onSelect={(val) => {
               updateProfile('agingCare', val);
-              setActiveBottleIndex(2); // Chronologiste
+              setActiveBottleIndex(2);
               setStep(QuizStep.Q6_IDEAL_FINISH);
             }}
             onBack={() => setStep(QuizStep.Q4_DAMAGE_LEVEL)}
@@ -267,7 +266,7 @@ const App: React.FC = () => {
             selectedOption={profile.idealFinish}
             onSelect={(val) => {
               updateProfile('idealFinish', val);
-              setActiveBottleIndex(3); // Elixir Ultime
+              setActiveBottleIndex(3);
               setStep(QuizStep.Q7_PRIORITY);
             }}
             onBack={() => setStep(QuizStep.Q5_AGING_CARE)}
@@ -308,24 +307,24 @@ const App: React.FC = () => {
 
       {/* 4. Fullscreen 3D Bottle Studio Modal */}
       {show3DFullscreenViewer && (
-        <div className="fixed inset-0 z-50 bg-[#070709]/95 backdrop-blur-2xl flex flex-col p-6 animate-fade-in">
+        <div className="fixed inset-0 z-50 bg-[#faf8f5]/98 backdrop-blur-2xl flex flex-col p-6 animate-fade-in text-slate-900">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Move3d className="w-5 h-5 text-amber-300" />
-              <h3 className="font-serif-luxury text-sm tracking-widest text-white uppercase font-bold">
+              <Move3d className="w-5 h-5 text-amber-600" />
+              <h3 className="font-serif-luxury text-sm tracking-widest text-slate-900 uppercase font-bold">
                 KÉRASTASE 3D STUDIO INSPECTION
               </h3>
             </div>
             <button
               onClick={() => setShow3DFullscreenViewer(false)}
-              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 transition-colors shadow-sm"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* 3D Canvas in Modal */}
-          <div className="flex-1 relative rounded-3xl overflow-hidden border border-white/15 bg-black/50">
+          <div className="flex-1 relative rounded-3xl overflow-hidden border border-slate-200/90 bg-white/60 shadow-lg">
             <ThreeScene
               step={QuizStep.RESULTS}
               activeProductIndex={activeBottleIndex}
@@ -334,15 +333,15 @@ const App: React.FC = () => {
             />
 
             {/* Bottle Navigation Overlay */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-black/60 backdrop-blur-md p-2 rounded-full border border-white/15">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-white/95 backdrop-blur-md p-2 rounded-full border border-slate-200 shadow-xl">
               {BOTTLE_CATALOG.map((b, idx) => (
                 <button
                   key={b.id}
                   onClick={() => setActiveBottleIndex(idx)}
-                  className={`px-3 py-1.5 rounded-full text-xs transition-all ${
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all ${
                     activeBottleIndex === idx
-                      ? 'bg-amber-400 text-slate-950 font-bold shadow-lg'
-                      : 'text-slate-300 hover:text-white'
+                      ? 'bg-amber-500 text-white shadow-md'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   {b.line.split(' ')[0]}
@@ -352,7 +351,7 @@ const App: React.FC = () => {
           </div>
 
           <div className="mt-4 text-center">
-            <p className="text-xs text-slate-400 tracking-wider">
+            <p className="text-xs text-slate-600 tracking-wider font-medium">
               画面を指でドラッグして360°回転 · ボトルの光沢とオイルテクスチャーを立体確認できます
             </p>
           </div>

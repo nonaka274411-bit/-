@@ -31,9 +31,9 @@ export const BOTTLE_CATALOG: BottleInfo[] = [
     frenchName: "L'Huile Cicaextreme",
     line: 'BLOND ABSOLU',
     colorName: 'バイオレット・アメジスト',
-    primaryColor: 0xA78BFA,
-    liquidColor: 0x9333ea,
-    glassColor: 0xc084fc,
+    primaryColor: 0x8B5CF6,
+    liquidColor: 0x7c3aed,
+    glassColor: 0xa78bfa,
     pumpColor: 0xe2e8f0, // silver/chrome
     benefits: 'ブリーチ・ハイトーン補修 / 集中保湿'
   },
@@ -43,8 +43,8 @@ export const BOTTLE_CATALOG: BottleInfo[] = [
     frenchName: 'Huile Chroma Gloss',
     line: 'CHROMA ABSOLU',
     colorName: 'ローズクォーツ',
-    primaryColor: 0xFB7185,
-    liquidColor: 0xf43f5e,
+    primaryColor: 0xF43F5E,
+    liquidColor: 0xe11d48,
     glassColor: 0xfb7185,
     pumpColor: 0xfce7f3, // rose chrome
     benefits: 'カラーヘアの色持ち / 艶やかなコーティング'
@@ -55,9 +55,9 @@ export const BOTTLE_CATALOG: BottleInfo[] = [
     frenchName: 'Huile de Parfum',
     line: 'CHRONOLOGISTE',
     colorName: 'オブシディアン・ゴールド',
-    primaryColor: 0x111111,
+    primaryColor: 0x18181b,
     liquidColor: 0x27272a,
-    glassColor: 0x18181b,
+    glassColor: 0x27272a,
     pumpColor: 0xD4AF37, // 24K Gold
     benefits: '全方位エイジングケア / 最高峰の輝き'
   },
@@ -67,9 +67,9 @@ export const BOTTLE_CATALOG: BottleInfo[] = [
     frenchName: "L'Huile Originale",
     line: 'ELIXIR ULTIME',
     colorName: 'アンバー・ゴールド',
-    primaryColor: 0xF59E0B,
-    liquidColor: 0xd97706,
-    glassColor: 0xfbbf24,
+    primaryColor: 0xD97706,
+    liquidColor: 0xb45309,
+    glassColor: 0xf59e0b,
     pumpColor: 0xD4AF37, // 24K Gold
     benefits: '至高のツヤとまとまり / 230℃熱保護'
   }
@@ -106,9 +106,10 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
     const container = mountRef.current;
     if (!container) return;
 
-    // --- Scene Setup ---
+    // --- Scene Setup: Bright Luminous Studio ---
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x0a0a0c, 0.055);
+    // Warm luminous atmospheric fog (replaces dark fog)
+    scene.fog = new THREE.FogExp2(0xfaf8f5, 0.015);
 
     const width = container.clientWidth || window.innerWidth;
     const height = container.clientHeight || window.innerHeight;
@@ -123,39 +124,40 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.25;
+    renderer.toneMappingExposure = 1.35;
     container.appendChild(renderer.domElement);
 
-    // --- Studio Lighting ---
-    const ambientLight = new THREE.AmbientLight(0xfff5ea, 1.4);
+    // --- Bright Studio Lighting ---
+    // Warm diffuse ambient light for clear bottle visibility
+    const ambientLight = new THREE.AmbientLight(0xfff7ed, 2.5);
     scene.add(ambientLight);
 
-    // Main Warm Key Light
-    const keyLight = new THREE.DirectionalLight(0xffeedd, 3.2);
-    keyLight.position.set(4, 6, 6);
+    // Crisp Key Light from upper right
+    const keyLight = new THREE.DirectionalLight(0xffffff, 3.8);
+    keyLight.position.set(4, 7, 6);
     scene.add(keyLight);
 
-    // Back Rim Light for luxury bottle edges
-    const rimLight = new THREE.DirectionalLight(0xd4af37, 3.8);
-    rimLight.position.set(-5, 4, -4);
+    // Warm Gold Rim Light from left rear to separate bottles from background
+    const rimLight = new THREE.DirectionalLight(0xf59e0b, 3.2);
+    rimLight.position.set(-5, 5, -3);
     scene.add(rimLight);
 
-    // Top Down Chandelier Light
-    const topLight = new THREE.PointLight(0xffffff, 2.5, 15);
-    topLight.position.set(0, 5, 2);
+    // Top-down chandelier focus
+    const topLight = new THREE.PointLight(0xfffbeb, 2.8, 16);
+    topLight.position.set(0, 6, 2);
     scene.add(topLight);
 
-    // Soft Fill Light from below (caustic reflection)
-    const fillLight = new THREE.PointLight(0xd97706, 1.2, 10);
-    fillLight.position.set(0, -3, 3);
-    scene.add(fillLight);
+    // Front soft fill light
+    const frontFill = new THREE.DirectionalLight(0xfff1f2, 1.8);
+    frontFill.position.set(0, 0, 7);
+    scene.add(frontFill);
 
-    // --- Luxury Reflective Floor Pedestal ---
-    const floorGeo = new THREE.PlaneGeometry(30, 30);
+    // --- Polished Pearl Studio Floor Pedestal ---
+    const floorGeo = new THREE.PlaneGeometry(35, 35);
     const floorMat = new THREE.MeshStandardMaterial({
-      color: 0x070709,
-      roughness: 0.18,
-      metalness: 0.8
+      color: 0xf5f2eb, // pearl ivory
+      roughness: 0.12,
+      metalness: 0.25
     });
     const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.rotation.x = -Math.PI / 2;
@@ -163,12 +165,12 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
     scene.add(floor);
 
     // Golden reflective accent ring on floor
-    const ringGeo = new THREE.RingGeometry(2.6, 2.64, 64);
+    const ringGeo = new THREE.RingGeometry(2.6, 2.65, 64);
     const ringMat = new THREE.MeshBasicMaterial({
       color: 0xd4af37,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.4
+      opacity: 0.55
     });
     const ring = new THREE.Mesh(ringGeo, ringMat);
     ring.rotation.x = -Math.PI / 2;
@@ -176,25 +178,25 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
     scene.add(ring);
 
     // --- Bottle Builder Helper ---
-    // Creates high-fidelity Kérastase bottle geometry
     const createBottle = (info: BottleInfo, xPos: number, index: number) => {
       const bottleGroup = new THREE.Group();
       bottleGroup.position.set(xPos, -0.2, 0);
 
-      // 1. Outer Glass Body (Rounded luxury cuboid/cylinder hybrid)
       const bottleHeight = 2.4;
       const bottleRadius = 0.52;
+
+      // 1. Outer Glass Body (crystal clear luxury glass with vibrant tint)
       const glassGeo = new THREE.CylinderGeometry(bottleRadius * 0.94, bottleRadius, bottleHeight, 48, 1, false);
       const glassMat = new THREE.MeshPhysicalMaterial({
         color: info.glassColor,
-        roughness: 0.08,
-        metalness: 0.15,
-        transmission: 0.65, // translucent luxury glass
-        thickness: 0.9,
+        roughness: 0.05,
+        metalness: 0.08,
+        transmission: 0.8, // high transmission for clear bright luxury glass
+        thickness: 0.85,
         ior: 1.52,
-        reflectivity: 0.9,
+        reflectivity: 0.95,
         clearcoat: 1.0,
-        clearcoatRoughness: 0.05
+        clearcoatRoughness: 0.03
       });
       const glassBody = new THREE.Mesh(glassGeo, glassMat);
       glassBody.position.y = 0;
@@ -204,9 +206,9 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
       const baseGeo = new THREE.CylinderGeometry(bottleRadius * 1.01, bottleRadius * 1.01, 0.22, 48);
       const baseMat = new THREE.MeshPhysicalMaterial({
         color: 0xffffff,
-        roughness: 0.04,
-        metalness: 0.1,
-        transmission: 0.8,
+        roughness: 0.03,
+        metalness: 0.05,
+        transmission: 0.9,
         ior: 1.54
       });
       const base = new THREE.Mesh(baseGeo, baseMat);
@@ -217,10 +219,10 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
       const liquidGeo = new THREE.CylinderGeometry(bottleRadius * 0.82, bottleRadius * 0.86, bottleHeight * 0.82, 32);
       const liquidMat = new THREE.MeshPhysicalMaterial({
         color: info.liquidColor,
-        roughness: 0.15,
+        roughness: 0.1,
         metalness: 0.1,
-        transmission: 0.4,
-        thickness: 1.2
+        transmission: 0.5,
+        thickness: 1.1
       });
       const liquid = new THREE.Mesh(liquidGeo, liquidMat);
       liquid.position.y = -0.05;
@@ -230,8 +232,8 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
       const shoulderGeo = new THREE.CylinderGeometry(0.38, bottleRadius * 0.94, 0.22, 48);
       const shoulderMat = new THREE.MeshStandardMaterial({
         color: info.pumpColor,
-        metalness: 0.92,
-        roughness: 0.15
+        metalness: 0.95,
+        roughness: 0.12
       });
       const shoulder = new THREE.Mesh(shoulderGeo, shoulderMat);
       shoulder.position.y = bottleHeight / 2 + 0.1;
@@ -246,9 +248,9 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
       // 4. Luxury Pump Dispenser & Spout
       const pumpHeadGeo = new THREE.CylinderGeometry(0.24, 0.24, 0.35, 32);
       const pumpHeadMat = new THREE.MeshStandardMaterial({
-        color: info.id === 'chronologiste' ? 0x111111 : info.pumpColor,
-        metalness: info.id === 'chronologiste' ? 0.3 : 0.9,
-        roughness: 0.2
+        color: info.id === 'chronologiste' ? 0x222222 : info.pumpColor,
+        metalness: info.id === 'chronologiste' ? 0.6 : 0.95,
+        roughness: 0.15
       });
       const pumpHead = new THREE.Mesh(pumpHeadGeo, pumpHeadMat);
       pumpHead.position.y = bottleHeight / 2 + 0.52;
@@ -261,7 +263,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
       nozzle.position.set(0.18, bottleHeight / 2 + 0.58, 0);
       bottleGroup.add(nozzle);
 
-      // 5. Embossed Front Emblem (K Crest)
+      // 5. Embossed Front Emblem (High contrast, clearly readable)
       const emblemCanvas = document.createElement('canvas');
       emblemCanvas.width = 256;
       emblemCanvas.height = 512;
@@ -269,31 +271,31 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
       if (ctx) {
         ctx.clearRect(0, 0, 256, 512);
 
-        // Kérastase Paris branding text
-        ctx.fillStyle = info.id === 'chronologiste' || info.id === 'elixir-ultime' ? '#F4D06F' : '#E2E8F0';
+        // Kérastase Paris branding text in crisp luxury typography
+        ctx.fillStyle = info.id === 'chronologiste' ? '#F4D06F' : '#1e293b';
         ctx.textAlign = 'center';
-        ctx.font = '600 20px "Cinzel", serif';
+        ctx.font = '700 20px "Cinzel", serif';
         ctx.fillText('KÉRASTASE', 128, 70);
 
-        ctx.font = '300 13px "Cinzel", serif';
+        ctx.font = '600 13px "Cinzel", serif';
         ctx.letterSpacing = '6px';
         ctx.fillText('PARIS', 128, 92);
 
-        // Center Gold "K" Emblem
-        ctx.font = 'bold 150px "Cinzel", serif';
-        ctx.fillStyle = info.id === 'chronologiste' || info.id === 'elixir-ultime' ? '#D4AF37' : '#FFFFFF';
+        // Center Emblem Monogram
+        ctx.font = 'bold 155px "Cinzel", serif';
+        ctx.fillStyle = info.id === 'chronologiste' || info.id === 'elixir-ultime' ? '#B45309' : '#0f172a';
         ctx.shadowColor = '#D4AF37';
-        ctx.shadowBlur = 12;
+        ctx.shadowBlur = 8;
         ctx.fillText('K', 128, 260);
 
         // Product Line & Name
         ctx.shadowBlur = 0;
-        ctx.font = '600 15px "Plus Jakarta Sans", sans-serif';
-        ctx.fillStyle = '#FFFFFF';
+        ctx.font = '700 16px "Plus Jakarta Sans", sans-serif';
+        ctx.fillStyle = '#0f172a';
         ctx.fillText(info.line, 128, 310);
 
-        ctx.font = '300 12px "Noto Sans JP", sans-serif';
-        ctx.fillStyle = '#D1D5DB';
+        ctx.font = '600 12px "Noto Sans JP", sans-serif';
+        ctx.fillStyle = '#334155';
         ctx.fillText(info.frenchName, 128, 340);
         ctx.fillText('REFILLABLE', 128, 370);
       }
@@ -304,7 +306,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
       const emblemMat = new THREE.MeshBasicMaterial({
         map: emblemTexture,
         transparent: true,
-        opacity: 0.95,
+        opacity: 0.96,
         side: THREE.DoubleSide
       });
       const emblemMesh = new THREE.Mesh(emblemPlane, emblemMat);
@@ -312,7 +314,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
       bottleGroup.add(emblemMesh);
 
       // Subtle warm aura spotlight behind each bottle
-      const auraGeo = new THREE.PlaneGeometry(2.2, 4.0);
+      const auraGeo = new THREE.PlaneGeometry(2.4, 4.2);
       const auraCanvas = document.createElement('canvas');
       auraCanvas.width = 128;
       auraCanvas.height = 256;
@@ -329,8 +331,8 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
       const auraMat = new THREE.MeshBasicMaterial({
         map: auraTex,
         transparent: true,
-        opacity: 0.35,
-        blending: THREE.AdditiveBlending,
+        opacity: 0.28,
+        blending: THREE.NormalBlending,
         side: THREE.DoubleSide
       });
       const aura = new THREE.Mesh(auraGeo, auraMat);
@@ -344,16 +346,14 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
       return bottleGroup;
     };
 
-    // Instantiate the 4 signature bottles
-    // Left to Right: Blond Absolu (-2.4), Chroma Absolu (-0.8), Chronologiste (0.8), Elixir Ultime (2.4)
+    // Instantiate 4 signature bottles
     const bottlePositions = [-2.45, -0.82, 0.82, 2.45];
     const createdBottles = BOTTLE_CATALOG.map((info, idx) =>
       createBottle(info, bottlePositions[idx], idx)
     );
     bottlesRef.current = createdBottles;
 
-    // --- Dynamic 3D Liquid Splash Swirl Ribbon (The Iconic Video Swirl) ---
-    // Smooth 3D spline winding dynamically around the bottles
+    // --- Dynamic 3D Liquid Splash Swirl Ribbon (Luminous Amber & Gold) ---
     const numPoints = 80;
     const curvePoints: THREE.Vector3[] = [];
     for (let i = 0; i <= numPoints; i++) {
@@ -368,15 +368,15 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
     const curve = new THREE.CatmullRomCurve3(curvePoints);
     const tubeGeo = new THREE.TubeGeometry(curve, 90, 0.08, 16, false);
     const tubeMat = new THREE.MeshPhysicalMaterial({
-      color: 0xD4AF37,
-      emissive: 0x854d0e,
-      emissiveIntensity: 0.3,
-      roughness: 0.1,
-      metalness: 0.4,
-      transmission: 0.7,
+      color: 0xf59e0b, // Luminous warm amber gold
+      emissive: 0xd97706,
+      emissiveIntensity: 0.35,
+      roughness: 0.08,
+      metalness: 0.3,
+      transmission: 0.75,
       ior: 1.45,
       transparent: true,
-      opacity: 0.85
+      opacity: 0.9
     });
     const swirlRibbon = new THREE.Mesh(tubeGeo, tubeMat);
     scene.add(swirlRibbon);
@@ -386,10 +386,10 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
     const dropletCount = 140;
     const dropGeo = new THREE.SphereGeometry(0.08, 12, 12);
     const dropMat = new THREE.MeshPhysicalMaterial({
-      color: 0xfef08a,
-      roughness: 0.05,
-      metalness: 0.2,
-      transmission: 0.85,
+      color: 0xfde047,
+      roughness: 0.04,
+      metalness: 0.15,
+      transmission: 0.88,
       thickness: 0.4,
       clearcoat: 1.0
     });
@@ -434,11 +434,11 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
     }
     dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
     const dustMat = new THREE.PointsMaterial({
-      color: 0xffe082,
-      size: 0.045,
+      color: 0xd97706,
+      size: 0.05,
       transparent: true,
-      opacity: 0.65,
-      blending: THREE.AdditiveBlending
+      opacity: 0.7,
+      blending: THREE.NormalBlending
     });
     const dustParticles = new THREE.Points(dustGeo, dustMat);
     scene.add(dustParticles);
@@ -461,7 +461,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
       const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
       const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
 
-      // Mouse coords for hover raycasting
       mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
       mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
 
@@ -474,7 +473,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
         dragRef.current.startY = clientY;
       }
 
-      // Check hover
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(scene.children, true);
       let foundIndex: number | null = null;
@@ -510,7 +508,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
     window.addEventListener('touchend', handlePointerUp);
     container.addEventListener('click', handleClick);
 
-    // --- Resize Handler ---
     const handleResize = () => {
       if (!container) return;
       const w = container.clientWidth || window.innerWidth;
@@ -529,29 +526,25 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
       animationFrameId = requestAnimationFrame(animate);
       const elapsedTime = clock.getElapsedTime();
 
-      // 1. Gentle floating / breathing animation for each bottle
+      // Floating animation
       bottlesRef.current.forEach((bottle, i) => {
         const offset = i * 0.8;
-        // Floating up and down
         bottle.position.y = -0.2 + Math.sin(elapsedTime * 1.4 + offset) * 0.08;
-
-        // Subtle tilting
         bottle.rotation.z = Math.sin(elapsedTime * 1.1 + offset) * 0.035;
         bottle.rotation.y = (elapsedTime * 0.25 + offset) * 0.15;
 
-        // Scale pop if hovered or active
         const isTarget = hoveredBottle === i || activeProductIndex === i;
         const targetScale = isTarget ? 1.08 : 1.0;
         bottle.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
       });
 
-      // 2. Liquid Splash Ribbon dynamics (Vortex rotation and waviness)
+      // Liquid Splash Ribbon dynamics
       if (swirlRibbonRef.current) {
         swirlRibbonRef.current.rotation.y = elapsedTime * 0.55 + dragRef.current.rotY * 0.5;
         swirlRibbonRef.current.rotation.x = Math.sin(elapsedTime * 0.8) * 0.1;
       }
 
-      // 3. Orbiting Droplets simulation
+      // Orbiting Droplets
       if (dropletsRef.current && dropletDataRef.current.length > 0) {
         const dMesh = dropletsRef.current;
         const dData = dropletDataRef.current;
@@ -574,18 +567,15 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
         dMesh.instanceMatrix.needsUpdate = true;
       }
 
-      // 4. Dust particles drift
       if (dustParticles) {
         dustParticles.rotation.y = elapsedTime * 0.04;
       }
 
-      // 5. Smooth Camera Choreography
-      // Interpolate camera position based on target and user drag
+      // Smooth Camera Choreography
       const currentTarget = cameraTargetRef.current;
       const targetPos = currentTarget.pos.clone();
       const targetLookAt = currentTarget.lookAt.clone();
 
-      // Apply drag offset
       targetPos.x += dragRef.current.rotY * 2.2;
       targetPos.y += dragRef.current.rotX * 1.8;
 
@@ -608,7 +598,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
       window.removeEventListener('touchend', handlePointerUp);
       container.removeEventListener('click', handleClick);
 
-      // Clean WebGL resources
       if (renderer.domElement && container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
@@ -624,7 +613,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
 
     switch (step) {
       case QuizStep.START:
-        // Wide panoramic view of the 4 iconic bottles (as seen in video intro)
         cameraTargetRef.current = {
           pos: new THREE.Vector3(0, 0.1, baseZ),
           lookAt: new THREE.Vector3(0, -0.1, 0)
@@ -632,7 +620,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
         break;
 
       case QuizStep.Q1_HAIR_TYPE:
-        // Dynamic lower-angle dolly in, showcasing bottle volume and hair texture
         cameraTargetRef.current = {
           pos: new THREE.Vector3(-1.1, -0.4, baseZ * 0.72),
           lookAt: new THREE.Vector3(-0.8, 0.1, 0)
@@ -640,7 +627,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
         break;
 
       case QuizStep.Q2_SCALP_TYPE:
-        // Elevated angle focusing on pump dispensers & top water droplets (scalp/cleansing)
         cameraTargetRef.current = {
           pos: new THREE.Vector3(0.5, 1.4, baseZ * 0.78),
           lookAt: new THREE.Vector3(0.2, 0.4, 0)
@@ -648,7 +634,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
         break;
 
       case QuizStep.Q3_FRIZZ_WAVE:
-        // Side angled dolly catching the liquid swirl wave
         cameraTargetRef.current = {
           pos: new THREE.Vector3(1.6, -0.1, baseZ * 0.75),
           lookAt: new THREE.Vector3(1.0, 0, 0)
@@ -656,7 +641,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
         break;
 
       case QuizStep.Q4_DAMAGE_LEVEL:
-        // Focus on the restorative Chronologiste obsidian bottle
         cameraTargetRef.current = {
           pos: new THREE.Vector3(0.82, 0.0, baseZ * 0.62),
           lookAt: new THREE.Vector3(0.82, 0.1, 0)
@@ -664,7 +648,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
         break;
 
       case QuizStep.Q5_AGING_CARE:
-        // Macro view capturing glass refractions & gold pump
         cameraTargetRef.current = {
           pos: new THREE.Vector3(0.3, 0.3, baseZ * 0.65),
           lookAt: new THREE.Vector3(0.5, 0.2, 0)
@@ -672,7 +655,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
         break;
 
       case QuizStep.Q6_IDEAL_FINISH:
-        // Shifting across the luminous lineup
         cameraTargetRef.current = {
           pos: new THREE.Vector3(-0.6, 0.2, baseZ * 0.75),
           lookAt: new THREE.Vector3(0, 0, 0)
@@ -680,7 +662,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
         break;
 
       case QuizStep.Q7_PRIORITY:
-        // Convergence angle before diagnosis
         cameraTargetRef.current = {
           pos: new THREE.Vector3(0, 0.6, baseZ * 0.8),
           lookAt: new THREE.Vector3(0, 0.1, 0)
@@ -688,7 +669,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
         break;
 
       case QuizStep.LOADING:
-        // High-speed vortex orbit: Camera zooms in and spins toward the center
         cameraTargetRef.current = {
           pos: new THREE.Vector3(0, 0.2, baseZ * 0.5),
           lookAt: new THREE.Vector3(0, 0.2, 0)
@@ -696,7 +676,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
         break;
 
       case QuizStep.RESULTS: {
-        // Spotlight the active or selected product
         const bottlePos = [-2.45, -0.82, 0.82, 2.45];
         const targetX = bottlePos[Math.max(0, Math.min(3, activeProductIndex))];
         cameraTargetRef.current = {
@@ -714,7 +693,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
     }
   }, [step, activeProductIndex]);
 
-  // Adjust camera slightly with scrollOffset
   useEffect(() => {
     if (scrollOffset && step !== QuizStep.LOADING) {
       cameraTargetRef.current.pos.y += (scrollOffset - 0.5) * 0.8;
@@ -723,30 +701,30 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({
 
   return (
     <div className={`relative w-full h-full select-none ${compactMode ? 'rounded-2xl overflow-hidden' : ''}`}>
-      {/* 3D Canvas Container */}
+      {/* 3D Canvas */}
       <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
 
-      {/* Floating 3D Interaction Badge & Bottle Tooltip */}
+      {/* Floating 3D Interaction Badge & Bottle Tooltip (Bright Luxury High Contrast) */}
       {hoveredBottle !== null && (
         <div className="absolute top-6 left-1/2 -translate-x-1/2 pointer-events-none transition-all duration-300">
-          <div className="glass-panel-dark px-4 py-2 rounded-full text-center shadow-2xl flex items-center gap-2 border border-amber-400/30">
-            <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-            <span className="text-[11px] font-serif-luxury tracking-widest text-amber-200 uppercase font-semibold">
+          <div className="glass-panel-light px-5 py-2.5 rounded-full text-center shadow-xl flex items-center gap-2 border border-amber-500/40">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping" />
+            <span className="text-[11px] font-serif-luxury tracking-widest text-slate-900 uppercase font-bold">
               {BOTTLE_CATALOG[hoveredBottle].line}
             </span>
-            <span className="text-white/40 text-xs">·</span>
-            <span className="text-[10px] text-slate-300 tracking-wider">
+            <span className="text-slate-400 text-xs">·</span>
+            <span className="text-[11px] text-slate-700 tracking-wider font-medium">
               {BOTTLE_CATALOG[hoveredBottle].name}
             </span>
           </div>
         </div>
       )}
 
-      {/* Subtle Bottom 3D Gesture Helper */}
+      {/* Subtle Bottom 3D Gesture Helper (Dark, high-contrast readable text) */}
       {step === QuizStep.START && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none text-center opacity-60 hover:opacity-100 transition-opacity">
-          <p className="text-[10px] tracking-[0.35em] text-amber-100/70 uppercase">
-            3D Drag to inspect bottles · スクロール連動
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none text-center">
+          <p className="text-[11px] tracking-[0.3em] text-slate-600 font-medium uppercase bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-amber-200 shadow-sm">
+            3Dドラッグで回転 · スクロール連動
           </p>
         </div>
       )}
