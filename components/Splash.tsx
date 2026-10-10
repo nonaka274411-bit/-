@@ -1,94 +1,137 @@
-
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { Sparkles, ArrowDown, ChevronRight, Eye } from 'lucide-react';
+import { BOTTLE_CATALOG } from './ThreeScene';
 
 interface SplashProps {
   onStart: () => void;
-  animate?: boolean;
+  activeBottleIndex: number;
+  onSelectBottle: (index: number) => void;
+  onOpen3DViewer?: () => void;
 }
 
-const Splash: React.FC<SplashProps> = ({ onStart, animate = true }) => {
-  const [startAnim, setStartAnim] = useState(false);
-
-  useEffect(() => {
-    if (animate) {
-      // Small buffer to ensure visual continuity after the white flash of the intro
-      const timer = setTimeout(() => setStartAnim(true), 100);
-      return () => clearTimeout(timer);
-    }
-  }, [animate]);
+const Splash: React.FC<SplashProps> = ({
+  onStart,
+  activeBottleIndex,
+  onSelectBottle,
+  onOpen3DViewer
+}) => {
+  const currentBottle = BOTTLE_CATALOG[activeBottleIndex] || BOTTLE_CATALOG[2];
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-8 bg-white text-slate-900 relative overflow-hidden h-screen w-full">
-      <style>{`
-        @keyframes float-gentle {
-          0% { transform: translateY(0) scale(1); }
-          100% { transform: translateY(-15px) scale(1.02); }
-        }
-        @keyframes reveal-up {
-          from { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(5px); }
-          to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-        }
-        .anim-float { animation: float-gentle 6s infinite alternate ease-in-out; }
-        .anim-reveal { animation: reveal-up 1.4s cubic-bezier(0.19, 1, 0.22, 1) forwards; }
-      `}</style>
-
-      {/* Main Content Area */}
-      <div className={`w-full max-w-sm flex flex-col items-center justify-center z-10 transition-opacity duration-500 ${startAnim ? 'opacity-100' : 'opacity-0'}`}>
-        
-        <div className="space-y-16 text-center mb-16">
-          <div className="space-y-8">
-             <div className={startAnim ? "anim-reveal" : ""} style={{ animationDelay: '0.2s' }}>
-                <p className="text-[10px] tracking-[0.6em] text-slate-400 uppercase mb-6">
-                  Salon Professional Ritual
-                </p>
-                <h1 className="text-5xl md:text-6xl font-serif text-slate-900 tracking-[0.35em] uppercase leading-tight">
-                  KERASTASE
-                </h1>
-             </div>
-             
-             <div className={`flex flex-col items-center space-y-4 ${startAnim ? "anim-reveal" : ""}`} style={{ animationDelay: '0.6s' }}>
-               <div className="w-12 h-[1px] bg-slate-200"></div>
-               <h2 className="text-base font-bold tracking-[0.5em] text-slate-700">
-                 美容室オークラ
-               </h2>
-               <p className="text-[10px] tracking-[0.4em] text-slate-400 font-light">
-                 AI HAIR CONCIERGE
-               </p>
-             </div>
-          </div>
-        </div>
-
-        {/* CTA Button */}
-        <div className={`w-full px-8 ${startAnim ? "anim-reveal" : ""}`} style={{ animationDelay: '1s' }}>
-           <button 
-            onClick={onStart}
-            className="group relative w-full py-6 overflow-hidden bg-slate-900 text-white transition-all hover:bg-black shadow-[0_20px_50px_rgba(0,0,0,0.1)] active:scale-95"
-          >
-            <span className="relative z-10 text-[11px] font-bold tracking-[0.5em] uppercase group-hover:tracking-[0.6em] transition-all duration-700">
-              診断を開始する
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-          </button>
-          
-          <div className="mt-10 flex flex-col items-center space-y-2 opacity-40">
-            <p className="text-[8px] tracking-[0.4em] text-slate-400 text-center uppercase">
-              Personalized Hair Analysis
-            </p>
-            <div className="w-1 h-8 bg-gradient-to-b from-slate-200 to-transparent"></div>
-          </div>
-        </div>
-      </div>
+    <div className="relative w-full min-h-screen flex flex-col justify-between p-6 md:p-8 z-10 pointer-events-none">
       
-      {/* Decorative Background */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30">
-         <div className="absolute top-[5%] -left-[10%] w-[100vw] h-[100vw] border-[0.5px] border-slate-100 rounded-full anim-float"></div>
-         <div className="absolute -bottom-[15%] -right-[15%] w-[80vw] h-[80vw] border-[0.5px] border-slate-100 rounded-full anim-float" style={{animationDelay: '-3s'}}></div>
-         
-         {/* Center Axis */}
-         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-slate-100 to-transparent"></div>
-         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1px] h-full bg-gradient-to-b from-transparent via-slate-100 to-transparent"></div>
+      {/* Top Header Bar */}
+      <header className="w-full flex items-center justify-between pointer-events-auto">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-500 to-amber-200 p-[1px] shadow-lg">
+            <div className="w-full h-full rounded-full bg-[#0d0e12] flex items-center justify-center">
+              <span className="font-serif-luxury text-amber-300 font-bold text-base">K</span>
+            </div>
+          </div>
+          <div>
+            <h1 className="text-xs md:text-sm font-serif-luxury tracking-[0.25em] text-white uppercase font-bold">
+              KÉRASTASE PARIS
+            </h1>
+            <p className="text-[10px] tracking-[0.2em] text-amber-200/80">
+              美容室オークラ AI CONCIERGE
+            </p>
+          </div>
+        </div>
+
+        {/* 3D Inspect Mode Button */}
+        {onOpen3DViewer && (
+          <button
+            onClick={onOpen3DViewer}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 backdrop-blur-md text-white text-[11px] tracking-wider transition-all active:scale-95 shadow-md"
+          >
+            <Eye className="w-3.5 h-3.5 text-amber-300" />
+            <span className="hidden sm:inline">3Dボトル自由視点</span>
+            <span className="sm:hidden">3D視点</span>
+          </button>
+        )}
+      </header>
+
+      {/* Middle Interactive Bottle Carousel & Details Bar */}
+      <div className="my-auto py-6 pointer-events-auto flex flex-col items-center">
+        
+        {/* Floating Product Tag (Frosted Glass 3D Pill) */}
+        <div className="glass-panel-dark px-5 py-3 rounded-2xl max-w-sm w-full text-center mb-6 shadow-2xl border border-white/15 animate-fade-in">
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <span className="text-[10px] uppercase tracking-[0.3em] font-serif-luxury text-amber-300 font-semibold">
+              {currentBottle.line}
+            </span>
+            <span className="text-white/30 text-xs">·</span>
+            <span className="text-[10px] tracking-widest text-slate-300">
+              {currentBottle.colorName}
+            </span>
+          </div>
+
+          <h2 className="text-base font-medium text-white tracking-wide">
+            {currentBottle.name}
+          </h2>
+
+          <p className="text-[11px] text-amber-100/70 mt-1 font-light tracking-wide">
+            {currentBottle.benefits}
+          </p>
+        </div>
+
+        {/* 4 Iconic Bottle Switchers (Tap to focus in 3D) */}
+        <div className="flex items-center gap-2 sm:gap-3 bg-black/40 backdrop-blur-md p-1.5 rounded-full border border-white/10 shadow-xl">
+          {BOTTLE_CATALOG.map((b, idx) => {
+            const isActive = activeBottleIndex === idx;
+            return (
+              <button
+                key={b.id}
+                onClick={() => onSelectBottle(idx)}
+                className={`relative px-3 py-1.5 rounded-full text-[11px] transition-all flex items-center gap-1.5 ${
+                  isActive
+                    ? 'bg-gradient-to-r from-amber-500/80 to-amber-600/90 text-white font-medium shadow-[0_0_15px_rgba(212,175,55,0.4)] scale-105'
+                    : 'text-slate-300 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                <span
+                  className="w-2 h-2 rounded-full border border-white/40"
+                  style={{ backgroundColor: '#' + b.primaryColor.toString(16).padStart(6, '0') }}
+                />
+                <span className="text-[10px] tracking-wider whitespace-nowrap">
+                  {b.line.split(' ')[0]}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <p className="text-[10px] text-slate-400 mt-2 tracking-widest text-center">
+          ボトルをタップまたはドラッグして3D回転
+        </p>
       </div>
 
+      {/* Bottom CTA & Diagnosis Initiation Section */}
+      <footer className="w-full flex flex-col items-center gap-4 pointer-events-auto pb-4">
+        
+        {/* Main CTA: Start Diagnosis */}
+        <div className="w-full max-w-sm">
+          <button
+            onClick={onStart}
+            className="group relative w-full py-4.5 px-6 rounded-2xl overflow-hidden bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 font-semibold tracking-[0.25em] text-xs uppercase shadow-[0_15px_35px_rgba(212,175,55,0.35)] transition-all duration-300 hover:shadow-[0_20px_45px_rgba(212,175,55,0.5)] active:scale-[0.98] flex items-center justify-center gap-2"
+          >
+            <Sparkles className="w-4 h-4 text-slate-950 animate-pulse" />
+            <span className="relative z-10">3Dヘア診断をスタート</span>
+            <ChevronRight className="w-4 h-4 text-slate-950 group-hover:translate-x-1 transition-transform" />
+
+            {/* Shimmer Light reflection */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+          </button>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="flex flex-col items-center gap-1 opacity-70 hover:opacity-100 transition-opacity cursor-pointer" onClick={onStart}>
+          <span className="text-[9px] tracking-[0.3em] uppercase text-slate-400">
+            Scroll or Tap to Start
+          </span>
+          <ArrowDown className="w-3.5 h-3.5 text-amber-300 animate-bounce" />
+        </div>
+      </footer>
     </div>
   );
 };
